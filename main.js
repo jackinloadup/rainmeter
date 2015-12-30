@@ -5,15 +5,13 @@ var ctx;
 var canvas_height = 300; // px
 var canvas_width = 1000; // px
 
-var height = 100; // [x
-var going_down = true;
-var max_height = 100; // px
-var min_height = 0; // px
 
-var bar_width = 50; // px
+var bar_width = 20;
+var bar_count = 2;
+var bar_spacing = 10; // px
 
+var bars = []; // array
 
-var increment = 2; // px
 
 
 function start_visualizer() {
@@ -22,7 +20,14 @@ function start_visualizer() {
 
 
   set_canvas_size();
+  generate_bars();
+  place_bars();
+  window.requestAnimationFrame(run_loop);
+}
+
+function run_loop() {
   clear_canvas();
+  draw_box();
   window.requestAnimationFrame(run_loop);
 }
 
@@ -33,10 +38,16 @@ function set_canvas_size() {
   ctx.canvas.height = canvas_height;
 }
 
-function run_loop() {
-  clear_canvas();
-  draw_box();
-  window.requestAnimationFrame(run_loop);
+function generate_bars() {
+  for (i = 1; i <= bar_count; i++) {
+    bars.push(new Bar(0, canvas_height, bar_width));
+  }
+}
+
+function place_bars() {
+  for (i = 0; i <= bars.length - 1; i++) {
+    bars[i].x = i * (bar_width + bar_spacing);
+  }
 }
 
 function clear_canvas() {
@@ -44,15 +55,7 @@ function clear_canvas() {
 }
 
 function draw_box() {
-  ctx.fillStyle = "rgba(150, 0, 200, 1)";
-  ctx.fillRect(10, 10, bar_width, height);
-
-  if (going_down) {
-    height = height - increment;
-  } else {
-    height = height + increment;
+  for (i = 0; i <= bars.length - 1; i++) {
+    bars[i].draw();
   }
-
-  if (height === min_height) going_down = false;
-  if (height === max_height) going_down = true;
 }
